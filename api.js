@@ -155,10 +155,10 @@ class ApiService {
         
         prompt += `\nUSER'S QUESTION: ${message}\n`;
         prompt += "RESPONSE REQUIREMENTS:\n";
-        prompt += "1. Analyze ALL relevant documents completely\n";
-        prompt += "2. Identify and synthesize key information\n";
-        prompt += "3. Structure response clearly with headings\n";
-        prompt += "6. then answer the user's question properly\n\n";
+        prompt += "1. firstly answer the user's question properly\n\n";
+        prompt += "2. Analyze ALL relevant documents completely\n";
+        prompt += "3. Identify and synthesize key information\n";
+        prompt += "4. Structure response clearly with headings\n";
         
         return prompt;
       }

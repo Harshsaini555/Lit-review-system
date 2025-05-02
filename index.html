@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LitReview AI - Literature Review Assistant</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Load fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-['Inter'] text-gray-900 h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <!-- <img src="assets/images/logo.svg" alt="LitReview AI" class="h-8 w-8"> -->
+                <h1 class="text-xl font-semibold text-indigo-600">LitReview AI</h1>
+            </div>
+            <div class="flex items-center">
+                <button id="clear-chat" class="text-sm text-gray-500 hover:text-indigo-600 transition px-3 py-1 rounded-md hover:bg-gray-100">Clear Chat</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="flex-grow flex flex-col overflow-y-auto">
+        <!-- Chat interface -->
+        <div class="flex-grow flex flex-col h-full">
+            <!-- Welcome message and context input -->
+            <div id="welcome-container" class="max-w-3xl mx-auto px-4 py-8 w-full">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-3">Welcome to LitReview AI</h2>
+                    <p class="text-gray-600 max-w-lg mx-auto">Your intelligent assistant for literature reviews. Upload papers, ask questions, and get insights to help with your research.</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                    <h3 class="font-medium text-lg mb-3">Set your research context</h3>
+                    <div class="mb-4">
+                        <label for="research-area" class="block text-sm font-medium text-gray-700 mb-1">Research Area</label>
+                        <input type="text" id="research-area" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., Machine Learning, Climate Science, Digital Humanities">
+                    </div>
+                    <div class="mb-4">
+                        <label for="research-question" class="block text-sm font-medium text-gray-700 mb-1">Research Question</label>
+                        <textarea id="research-question" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="What specific question are you trying to answer?"></textarea>
+                    </div>
+                    <button id="start-chat" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition flex items-center justify-center">
+                        <span>Start Your Literature Review</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="font-medium text-lg mb-3">Upload Papers</h3>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        <p class="mt-2 text-sm text-gray-600">Drag & drop your PDFs here, or</p>
+                        <button id="upload-btn" class="mt-2 px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-md hover:bg-indigo-100 transition">Browse Files</button>
+                        <input type="file" id="file-upload" class="hidden" multiple accept=".pdf">
+                        <p class="mt-3 text-xs text-gray-500">PDF files up to 20MB</p>
+                    </div>
+                    <div id="uploaded-files" class="mt-4 space-y-2 hidden"></div>
+                </div>
+            </div>
+            
+            <!-- Chat messages container -->
+            <div id="chat-container" class="flex-grow overflow-y-auto px-4 py-4 hidden">
+                <div class="max-w-3xl mx-auto">
+                    <div id="messages" class="space-y-4"></div>
+                </div>
+            </div>
+            
+            <!-- Input area -->
+            <div id="input-container" class="border-t border-gray-200 bg-white px-4 py-3 hidden">
+                <div class="max-w-3xl mx-auto flex items-end">
+                    <div class="flex-grow relative">
+                        <textarea id="message-input" rows="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none" placeholder="Ask a question about your research..."></textarea>
+                        <div id="suggestion-chips" class="absolute -top-12 left-0 right-0 flex gap-2 overflow-x-auto py-2 px-1">
+                            <button class="suggestion-chip text-xs whitespace-nowrap bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-full hover:bg-indigo-100">Summarize main findings</button>
+                            <button class="suggestion-chip text-xs whitespace-nowrap bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-full hover:bg-indigo-100">Find research gaps</button>
+                            <button class="suggestion-chip text-xs whitespace-nowrap bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-full hover:bg-indigo-100">Compare methodologies</button>
+                        </div>
+                    </div>
+                    <button id="send-message" class="ml-2 bg-indigo-600 text-white rounded-full p-2.5 flex-shrink-0 hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Settings Modal -->
+
+
+    <!-- Loading Modal -->
+    <div id="loading-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 flex flex-col items-center max-w-sm mx-4">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 mb-4"></div>
+            <p id="loading-text" class="text-gray-700">Processing your papers...</p>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="utilis.js"></script>
+    <script src="api.js"></script>
+    <script src="ui.js"></script>
+    <script src="app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    </script>
+</body>
+</html>

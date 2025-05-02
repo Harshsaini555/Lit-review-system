@@ -154,9 +154,7 @@ class UIController {
                 this.uploadedFiles.push(paper);
                 
                 // Show immediate feedback for patents
-                if (paper.isPatent) {
-                  this.showNotification(`Successfully processed patent: ${paper.title}`);
-                }
+                this.showNotification(`Successfully processed ${file.name}`, 'success');
               } catch (error) {
                 console.error(`Error processing ${file.name}:`, error);
                 this.showNotification(
@@ -195,8 +193,7 @@ class UIController {
                     <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
                 </svg>
                 <div>
-                    <div class="text-sm font-medium">${sanitizeText(paper.title || paper.filename)}</div>
-                    <div class="text-xs text-gray-500">${formatFileSize(paper.size || 0)}</div>
+                    <div class="text-sm font-medium">${sanitizeText(paper.filename)}</div>
                 </div>
             </div>
             <button class="remove-file text-gray-400 hover:text-red-500">

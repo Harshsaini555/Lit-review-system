@@ -126,25 +126,24 @@ class ApiService {
      * @returns {string} - The full prompt
      */
     constructPrompt(message, context) {
-        let prompt = 'You are a patent analysis assistant. ';
+        let prompt = 'You are an advanced document analysis assistant. Your task is to thoroughly analyze ALL provided documents and respond to user queries with accurate, detailed information.\n\n';
         
         if (context.researchArea) {
           prompt += `Research Area: ${context.researchArea}\n`;
         }
         
         // Special handling for patent documents
-        const patents = this.uploadedPapers.filter(p => p.isPatent);
+        const patents = this.uploadedPapers
         if (patents.length > 0) {
-          prompt += "Patent Documents:\n";
+          prompt += "DOCUMENTS AVAILABLE FOR ANALYSIS:\n";
           patents.forEach((patent, i) => {
-            prompt += `\nPATENT ${i+1}: ${patent.title}\n`;
-            prompt += `Inventors: ${patent.authors.join(', ')}\n`;
+            prompt += `\npaper ${i+1}: ${patent.title}\n`;
             prompt += `Abstract: ${patent.abstract}\n`;
             
             // Include key sections for patents
             const fullText = patent.fullText;
             const sections = {
-              description: this.extractSection(fullText, 'DESCRIPTION OF THE INVENTION', 'STATE OF THE ART'),
+              description: this.extractSection(fullText),
               claims: this.extractSection(fullText, 'CLAIMS', 'ABSTRACT')
             };
             
@@ -154,8 +153,12 @@ class ApiService {
           });
         }
         
-        prompt += `\nQuestion: ${message}\n`;
-        prompt += "Provide a detailed summary focusing on technical innovations, research gaps, and commercial potential.";
+        prompt += `\nUSER'S QUESTION: ${message}\n`;
+        prompt += "RESPONSE REQUIREMENTS:\n";
+        prompt += "1. Analyze ALL relevant documents completely\n";
+        prompt += "2. Identify and synthesize key information\n";
+        prompt += "3. Structure response clearly with headings\n";
+        prompt += "6. then answer the user's question properly\n\n";
         
         return prompt;
       }
